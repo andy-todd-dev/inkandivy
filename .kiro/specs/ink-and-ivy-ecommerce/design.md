@@ -53,14 +53,14 @@ graph TB
 
 **Backend:**
 - Medusa v2 for e-commerce functionality
-- PostgreSQL database for Medusa data
+- PostgreSQL database for Medusa data and session storage
 - Sanity CMS for editorial content management
-- Redis for session management and caching
+- Next.js built-in caching and session management
 
 **Infrastructure (Free Tier Optimized):**
 - Vercel for frontend deployment and edge functions (free tier)
 - Render for Medusa backend hosting (free tier with 750 hours/month)
-- Neon for PostgreSQL database (free tier with 10GB storage)
+- Neon for PostgreSQL database and session storage (free tier with 10GB storage)
 - Sanity CMS for content management (free tier: 3 users, 10k API requests/month)
 - Cloudinary for image management (free tier with 25GB storage)
 - Stripe for payment processing (via Medusa's native integration, no monthly fees)
@@ -353,6 +353,64 @@ interface InkAndIvyProduct extends MedusaProduct {
 - Progressive image loading with botanical placeholders
 - Search fallbacks when content search is unavailable
 - Offline content caching for improved user experience
+
+## Development Environment Strategy
+
+### Containerized Development with Dev Containers
+
+**Philosophy:**
+All development will be conducted in containerized environments to ensure consistency across team members, eliminate "works on my machine" issues, and provide professional development practices. The approach combines Dev Containers for IDE integration with Docker Compose for supporting services.
+
+**Development Architecture:**
+```yaml
+# Hybrid containerized approach
+Development Environment:
+├── Dev Container (VS Code integration)
+│   ├── Node.js 18 + TypeScript
+│   ├── Development tools (Medusa CLI, Sanity CLI, Terraform)
+│   ├── Testing framework (Playwright, Jest)
+│   └── IDE extensions (Tailwind, Sanity, Terraform)
+├── Docker Compose Services
+│   ├── PostgreSQL (local database and sessions)
+│   └── Optional: Local Sanity Studio
+└── Shared Volumes
+    ├── Source code (live reload)
+    └── Node modules (performance)
+```
+
+**Benefits:**
+- **Consistent Environment**: Same development setup for all team members
+- **Quick Onboarding**: New developers productive immediately with `code .` → "Reopen in Container"
+- **Service Integration**: All services (database, cache, APIs) available locally
+- **Testing Ready**: Complete environment for E2E testing with Playwright
+- **Professional Standards**: Demonstrates modern containerized development practices
+
+**Authentication and Data Access Strategy (Free-Tier Optimized):**
+- **Single Source of Truth**: Medusa PostgreSQL database stores all user accounts, authentication, and customer data
+- **Authentication Flow**: Next.js frontend sends credentials to Medusa, which validates and returns JWT tokens
+- **Token Management**: Frontend stores and uses Medusa-generated JWT tokens for all authenticated API calls
+- **Backend Data Access**: All database operations handled exclusively by Medusa backend APIs
+- **Session Storage**: Medusa uses PostgreSQL for cart sessions, customer data, and authentication state
+- **API Security**: Frontend communicates with database only through Medusa's authenticated API endpoints
+- **Caching**: Next.js ISR for frontend performance, Sanity CDN for content delivery
+
+**Development Workflow:**
+```bash
+# 1. Clone and open in VS Code
+git clone ink-ivy-ecommerce && code ink-ivy-ecommerce
+
+# 2. VS Code prompts: "Reopen in Container"
+# → Complete development environment ready
+
+# 3. All services available
+npm run dev:frontend  # Next.js at localhost:3000
+npm run dev:backend   # Medusa at localhost:9000
+npm run dev:studio    # Sanity Studio at localhost:3333
+
+# 4. Integrated testing
+npm run test:e2e      # Playwright against local services
+npm run test:api      # API tests against local Medusa
+```
 
 ## Infrastructure as Code Strategy
 
@@ -803,7 +861,7 @@ test('WHEN customer views product THEN trust signals are displayed', async ({ pa
 
 ### Botanical Design System
 
-**Visual Identity (Inspired by Sous Chef's Clean Aesthetic):**
+**Visual Identity:**
 - Earthy color palette (sage greens, warm browns, cream whites)
 - Clean, minimal product photography with subtle botanical elements
 - Typography inspired by hand-lettering and botanical illustrations
