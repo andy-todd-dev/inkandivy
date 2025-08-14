@@ -2,9 +2,9 @@
 
 ## Overview
 
-Ink and Ivy will be built as a modern, headless e-commerce application combining Medusa's robust commerce backend with a custom Next.js frontend. The architecture separates commerce functionality (handled by Medusa) from content management and presentation (custom frontend), enabling both powerful e-commerce features and rich editorial content.
+Ink and Ivy will be built as a modern, headless e-commerce demonstration site combining Medusa's robust commerce backend with a custom Next.js frontend. This is a portfolio/demo project showcasing professional e-commerce development practices while operating entirely on free tiers. The architecture separates commerce functionality (handled by Medusa) from content management and presentation (custom frontend), enabling both powerful e-commerce features and rich editorial content.
 
-The system follows a modular approach where Medusa provides commerce primitives (products, cart, orders, payments, inventory) while the frontend handles botanical branding, content management, and the integrated shopping/reading experience.
+The system follows a modular approach where Medusa provides commerce primitives (products, cart, orders, payments, inventory) while the frontend handles botanical branding, content management, and the integrated shopping/reading experience. All infrastructure is designed to operate within free tier limits while demonstrating enterprise-grade practices.
 
 ## Architecture
 
@@ -460,30 +460,24 @@ terraform {
 
 ### Environment Management
 
-**Two-Environment Strategy:**
+**Single Production Environment Strategy (Free Tier Demo):**
 ```hcl
 # environments/production.tfvars
 environment = "production"
 domain = "inkandivy.com"
-render_plan = "starter"
-database_size = "medium"
-
-# environments/staging.tfvars  
-environment = "staging"
-domain = "staging.inkandivy.com"
 render_plan = "free"
 database_size = "small"
 ```
 
-**Development Flow:**
+**Development Flow (Free Tier Optimized):**
 - **Local Development**: Containerized environment with Docker Compose
-- **Staging**: Cloud infrastructure for integration testing and client review
-- **Production**: Live site with optimized cloud infrastructure
+- **Production**: Single free tier cloud infrastructure for demo site
+- **Note**: In enterprise environments, a staging environment would typically be included, but this is omitted to maintain free tier constraints while demonstrating professional development practices
 
 **Infrastructure State Management:**
 - **Terraform Cloud (Free Tier)**: Professional state management with web UI and collaboration features
 - **State Locking**: Automatic locking prevents concurrent modifications
-- **Environment Isolation**: Separate workspaces for development, staging, and production
+- **Environment Isolation**: Single production workspace (staging omitted for free tier constraints)
 - **Version History**: Complete state change tracking and rollback capabilities
 - **Encryption**: State encrypted at rest and in transit
 - **CI/CD Integration**: GitHub Actions integration for automated deployments
@@ -514,18 +508,17 @@ on: push to main
 ├── Seed test data and wait for services
 ├── Run Playwright E2E tests against local stack
 ├── Tear down test stack
-├── If all tests pass → Deploy to staging (Vercel + Render)
-├── Run staging smoke tests
-└── Manual approval → Deploy to production
+└── If all tests pass → Deploy to production (Vercel + Render)
 ```
 
 **CI/CD Integration:**
 - **Centralized Testing**: Single GitHub Actions workflow runs all tests against Docker Compose stack
 - **Deployment Gates**: No deployments without passing tests (Vercel and Render auto-deploy disabled)
 - **Infrastructure Changes**: Pull request triggers Terraform plan, merge triggers apply
-- **Environment Promotion**: Local → Staging → Production with validation at each stage
+- **Direct Deployment**: Local → Production (staging omitted for free tier constraints)
 - **Rollback Strategy**: Terraform Cloud state version rollback and GitHub Actions redeployment
 - **Test Isolation**: Each CI run gets fresh Docker Compose stack with consistent test data
+- **Enterprise Note**: Production environments would typically include staging, but this demonstrates professional practices within free tier limits
 
 ### Configuration Management
 

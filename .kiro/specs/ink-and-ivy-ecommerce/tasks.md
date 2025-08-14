@@ -7,7 +7,7 @@
   - Create Terraform Cloud account and organization (ink-and-ivy)
   - Set up Terraform project structure with provider configurations (Vercel, Render, Neon, Stripe)
   - Configure Terraform Cloud backend with workspace configuration
-  - Create environment-specific workspaces (staging, production) - no cloud development environment
+  - Create single production workspace (staging omitted for free tier constraints)
   - Set up Terraform Cloud variables for sensitive data (API keys, tokens)
   - Create infrastructure modules for reusable components
   - Configure GitHub integration for automated Terraform Cloud runs
@@ -47,9 +47,9 @@
   - Set up Playwright to run against Docker Compose services in GitHub Actions (only after unit tests pass)
   - Configure Vercel deployment integration with GitHub Actions (disable auto-deploy)
   - Configure Render deployment integration with GitHub Actions (disable auto-deploy)
-  - Create deployment gates: unit tests → E2E tests → staging deployment
-  - Set up staging smoke tests and production deployment approval workflow
+  - Create deployment gates: unit tests → E2E tests → production deployment
   - Configure deployment status notifications and rollback procedures
+  - Document staging environment omission for free tier constraints in README
   - _Requirements: Professional development practices, deployment safety, and quality assurance_
 
 ## Phase 2: Core Services Setup and Deployment
@@ -65,12 +65,12 @@
   - Test Medusa backend functionality in local development container
   - _Requirements: 1.1, 1.2, 1.3, 10.1, 10.2_
 
-- [ ] 2.2 Deploy Medusa backend to staging infrastructure
-  - Deploy Medusa backend to Render using Terraform-managed staging infrastructure
-  - Configure environment variables and database connections for staging
+- [ ] 2.2 Deploy Medusa backend to production infrastructure
+  - Deploy Medusa backend to Render using Terraform-managed production infrastructure
+  - Configure environment variables and database connections for production
   - Set up cross-service environment variable dependencies
-  - Validate staging deployment and basic API functionality
-  - Test Medusa admin interface and basic product management on staging
+  - Validate production deployment and basic API functionality
+  - Test Medusa admin interface and basic product management on production
   - _Requirements: 12.1, 12.2, 11.3_
 
 - [ ] 3. Set up and deploy Sanity CMS
