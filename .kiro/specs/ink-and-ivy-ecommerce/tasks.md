@@ -7,7 +7,7 @@
   - Create Terraform Cloud account and organization (ink-and-ivy)
   - Set up Terraform project structure with provider configurations (Vercel, Render, Neon, Stripe)
   - Configure Terraform Cloud backend with workspace configuration
-  - Create environment-specific workspaces (development, staging, production)
+  - Create environment-specific workspaces (staging, production) - no cloud development environment
   - Set up Terraform Cloud variables for sensitive data (API keys, tokens)
   - Create infrastructure modules for reusable components
   - Configure GitHub integration for automated Terraform Cloud runs
@@ -29,36 +29,36 @@
   - Validate infrastructure connectivity and basic health checks
   - _Requirements: 11.1, 11.2, 11.3, 12.1, 12.2_
 
-- [ ] 1.4 Set up containerized development environment
+- [ ] 1.4 Set up local containerized development environment
   - Create Dev Container configuration with Node.js 18, TypeScript, and development tools
   - Configure VS Code extensions for Next.js, Tailwind, Sanity, Terraform, and Playwright
   - Set up Docker Compose for local PostgreSQL service (with session storage)
   - Create development Dockerfile with Medusa CLI, Sanity CLI, and testing tools
-  - Configure environment variables and service connections for local development
-  - Set up port forwarding and service discovery for integrated development
+  - Configure environment variables and service connections for local development only
+  - Set up port forwarding and service discovery for integrated local development
   - Create development scripts for easy container and service management
-  - Document development environment setup, usage, and troubleshooting
+  - Document local development environment setup, usage, and troubleshooting
   - _Requirements: Professional development practices and team collaboration_
 
 ## Phase 2: Core Services Setup and Deployment
 
 - [ ] 2. Set up and deploy Medusa backend
 - [ ] 2.1 Initialize Medusa backend with enhanced product structure
-  - Initialize Medusa project within containerized development environment
+  - Initialize Medusa project within local containerized development environment
   - Configure PostgreSQL connection to local Docker Compose database
-  - Configure Stripe payment integration with webhook endpoints for both local and production
+  - Configure Stripe payment integration with webhook endpoints for local development and production
   - Create custom product metadata fields for botanical themes, art supply types, curation stories, artisan producers, and sustainability info
   - Set up basic product categories (notebooks, pens, art supplies, desk accessories)
   - Configure Medusa admin for product management
-  - Test Medusa backend functionality in development container
+  - Test Medusa backend functionality in local development container
   - _Requirements: 1.1, 1.2, 1.3, 10.1, 10.2_
 
-- [ ] 2.2 Deploy Medusa backend to infrastructure
-  - Deploy Medusa backend to Render using Terraform-managed infrastructure
-  - Configure environment variables and database connections
+- [ ] 2.2 Deploy Medusa backend to staging infrastructure
+  - Deploy Medusa backend to Render using Terraform-managed staging infrastructure
+  - Configure environment variables and database connections for staging
   - Set up cross-service environment variable dependencies
-  - Validate deployment and basic API functionality
-  - Test Medusa admin interface and basic product management
+  - Validate staging deployment and basic API functionality
+  - Test Medusa admin interface and basic product management on staging
   - _Requirements: 12.1, 12.2, 11.3_
 
 - [ ] 3. Set up and deploy Sanity CMS

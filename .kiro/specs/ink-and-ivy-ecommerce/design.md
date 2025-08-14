@@ -356,15 +356,15 @@ interface InkAndIvyProduct extends MedusaProduct {
 
 ## Development Environment Strategy
 
-### Containerized Development with Dev Containers
+### Local Development with Containerized Services
 
 **Philosophy:**
-All development will be conducted in containerized environments to ensure consistency across team members, eliminate "works on my machine" issues, and provide professional development practices. The approach combines Dev Containers for IDE integration with Docker Compose for supporting services.
+All development will be conducted locally using containerized services to ensure consistency, eliminate "works on my machine" issues, and provide professional development practices. The approach uses Dev Containers for IDE integration with Docker Compose for supporting services, with no cloud development environment required.
 
 **Development Architecture:**
 ```yaml
-# Hybrid containerized approach
-Development Environment:
+# Local containerized development
+Local Development Environment:
 ├── Dev Container (VS Code integration)
 │   ├── Node.js 18 + TypeScript
 │   ├── Development tools (Medusa CLI, Sanity CLI, Terraform)
@@ -378,11 +378,17 @@ Development Environment:
     └── Node modules (performance)
 ```
 
+**Environment Strategy:**
+- **Local Development**: Complete containerized environment with Docker Compose
+- **Staging**: Cloud infrastructure managed by Terraform for integration testing
+- **Production**: Cloud infrastructure managed by Terraform for live site
+
 **Benefits:**
 - **Consistent Environment**: Same development setup for all team members
 - **Quick Onboarding**: New developers productive immediately with `code .` → "Reopen in Container"
 - **Service Integration**: All services (database, cache, APIs) available locally
 - **Testing Ready**: Complete environment for E2E testing with Playwright
+- **Cost Effective**: No cloud development environment costs
 - **Professional Standards**: Demonstrates modern containerized development practices
 
 **Authentication and Data Access Strategy (Free-Tier Optimized):**
@@ -402,7 +408,7 @@ git clone ink-ivy-ecommerce && code ink-ivy-ecommerce
 # 2. VS Code prompts: "Reopen in Container"
 # → Complete development environment ready
 
-# 3. All services available
+# 3. All services available locally
 npm run dev:frontend  # Next.js at localhost:3000
 npm run dev:backend   # Medusa at localhost:9000
 npm run dev:studio    # Sanity Studio at localhost:3333
@@ -445,7 +451,7 @@ terraform {
 - **Render Services**: Medusa backend deployment, scaling configuration, environment management
 - **Neon Databases**: PostgreSQL database provisioning, connection string management
 - **Stripe Configuration**: Webhook endpoints, payment method configuration
-- **Environment Management**: Consistent variable management across all services
+- **Environment Management**: Consistent variable management across staging and production
 
 **Manual Bootstrap Required (30%):**
 - **Sanity CMS**: Initial project creation (CLI-based, then schema as code)
@@ -454,7 +460,7 @@ terraform {
 
 ### Environment Management
 
-**Multi-Environment Strategy:**
+**Two-Environment Strategy:**
 ```hcl
 # environments/production.tfvars
 environment = "production"
@@ -468,6 +474,11 @@ domain = "staging.inkandivy.com"
 render_plan = "free"
 database_size = "small"
 ```
+
+**Development Flow:**
+- **Local Development**: Containerized environment with Docker Compose
+- **Staging**: Cloud infrastructure for integration testing and client review
+- **Production**: Live site with optimized cloud infrastructure
 
 **Infrastructure State Management:**
 - **Terraform Cloud (Free Tier)**: Professional state management with web UI and collaboration features
