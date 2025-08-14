@@ -40,14 +40,14 @@
   - Document local development environment setup, usage, and troubleshooting
   - _Requirements: Professional development practices and team collaboration_
 
-- [ ] 1.5 Configure CI/CD pipeline with Docker Compose testing
+- [ ] 1.5 Configure CI/CD pipeline with optimized testing workflow
+  - Set up GitHub Actions workflow with unit tests first for fast feedback
   - Create Docker Compose test configuration (docker-compose.test.yml) with isolated test services
-  - Set up GitHub Actions workflow for centralized testing with Docker Compose stack
   - Configure test data seeding scripts for consistent E2E test scenarios
-  - Set up Playwright to run against Docker Compose services in GitHub Actions
+  - Set up Playwright to run against Docker Compose services in GitHub Actions (only after unit tests pass)
   - Configure Vercel deployment integration with GitHub Actions (disable auto-deploy)
   - Configure Render deployment integration with GitHub Actions (disable auto-deploy)
-  - Create deployment gates: tests must pass before staging deployment
+  - Create deployment gates: unit tests → E2E tests → staging deployment
   - Set up staging smoke tests and production deployment approval workflow
   - Configure deployment status notifications and rollback procedures
   - _Requirements: Professional development practices, deployment safety, and quality assurance_

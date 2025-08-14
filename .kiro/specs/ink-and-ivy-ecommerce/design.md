@@ -509,12 +509,12 @@ terraform apply  # Executes in Terraform Cloud with state management
 ```yaml
 # GitHub Actions Workflow
 on: push to main
-├── Spin up Docker Compose test stack (postgres, medusa, frontend)
+├── Run strategic unit tests for business logic (fast feedback)
+├── If unit tests pass → Spin up Docker Compose test stack
 ├── Seed test data and wait for services
 ├── Run Playwright E2E tests against local stack
-├── Run strategic unit tests for business logic
 ├── Tear down test stack
-├── If tests pass → Deploy to staging (Vercel + Render)
+├── If all tests pass → Deploy to staging (Vercel + Render)
 ├── Run staging smoke tests
 └── Manual approval → Deploy to production
 ```
