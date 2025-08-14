@@ -138,7 +138,7 @@ The system will be built using Medusa as the e-commerce backend to handle produc
 1. WHEN infrastructure needs to be deployed THEN the system SHALL use Terraform to provision and configure all services automatically
 2. WHEN environment variables need to be managed THEN the system SHALL use centralized configuration management across all services
 3. WHEN infrastructure changes are made THEN the system SHALL track all modifications in version control with proper change management
-4. WHEN deploying to different environments THEN the system SHALL ensure consistent configuration between development, staging, and production
+4. WHEN deploying to production environment THEN the system SHALL ensure consistent configuration for production deployment
 5. IF infrastructure needs to be rebuilt THEN the system SHALL provide complete disaster recovery through Infrastructure as Code
 
 ### Requirement 12: API Integration and Data Synchronization

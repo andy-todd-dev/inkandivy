@@ -380,7 +380,6 @@ Local Development Environment:
 
 **Environment Strategy:**
 - **Local Development**: Complete containerized environment with Docker Compose
-- **Staging**: Cloud infrastructure managed by Terraform for integration testing
 - **Production**: Cloud infrastructure managed by Terraform for live site
 
 **Benefits:**
@@ -423,7 +422,7 @@ npm run test:api      # API tests against local Medusa
 ### Terraform-Based Infrastructure Management
 
 **Philosophy:**
-All infrastructure provisioning and configuration will be managed through Terraform to ensure reproducibility, version control, and professional deployment practices. This approach eliminates manual configuration through provider UIs and enables consistent environments across development, staging, and production.
+All infrastructure provisioning and configuration will be managed through Terraform to ensure reproducibility, version control, and professional deployment practices. This approach eliminates manual configuration through provider UIs and enables consistent production environment deployment.
 
 **Terraform Configuration with Cloud Backend:**
 ```hcl
@@ -451,7 +450,7 @@ terraform {
 - **Render Services**: Medusa backend deployment, scaling configuration, environment management
 - **Neon Databases**: PostgreSQL database provisioning, connection string management
 - **Stripe Configuration**: Webhook endpoints, payment method configuration
-- **Environment Management**: Consistent variable management across staging and production
+- **Environment Management**: Consistent variable management for production environment
 
 **Manual Bootstrap Required (30%):**
 - **Sanity CMS**: Initial project creation (CLI-based, then schema as code)
