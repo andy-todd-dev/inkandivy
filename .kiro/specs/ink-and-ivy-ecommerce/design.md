@@ -503,17 +503,29 @@ terraform init   # Initialize with Terraform Cloud backend
 # 3. Infrastructure Deployment
 terraform plan -var-file="environments/production.tfvars"
 terraform apply  # Executes in Terraform Cloud with state management
+```
 
-# 4. Application Deployment (triggered by infrastructure)
-# Vercel and Render auto-deploy from Git repositories
+**CI/CD Pipeline with Docker Compose Testing:**
+```yaml
+# GitHub Actions Workflow
+on: push to main
+├── Spin up Docker Compose test stack (postgres, medusa, frontend)
+├── Seed test data and wait for services
+├── Run Playwright E2E tests against local stack
+├── Run strategic unit tests for business logic
+├── Tear down test stack
+├── If tests pass → Deploy to staging (Vercel + Render)
+├── Run staging smoke tests
+└── Manual approval → Deploy to production
 ```
 
 **CI/CD Integration:**
-- **Terraform Cloud Integration**: GitHub Actions trigger Terraform Cloud runs automatically
+- **Centralized Testing**: Single GitHub Actions workflow runs all tests against Docker Compose stack
+- **Deployment Gates**: No deployments without passing tests (Vercel and Render auto-deploy disabled)
 - **Infrastructure Changes**: Pull request triggers Terraform plan, merge triggers apply
-- **Application Changes**: Automatic deployment via Git integration with Vercel and Render
-- **Environment Promotion**: Terraform Cloud workspace-based environment management
-- **Rollback Strategy**: Terraform Cloud state version rollback and application redeployment
+- **Environment Promotion**: Local → Staging → Production with validation at each stage
+- **Rollback Strategy**: Terraform Cloud state version rollback and GitHub Actions redeployment
+- **Test Isolation**: Each CI run gets fresh Docker Compose stack with consistent test data
 
 ### Configuration Management
 
