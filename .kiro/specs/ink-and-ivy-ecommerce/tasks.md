@@ -21,12 +21,15 @@
   - Document bootstrap process and credential management
   - _Requirements: 11.1, 11.2_
 
-- [ ] 1.3 Deploy basic infrastructure with Terraform
+- [ ] 1.3 Deploy basic infrastructure with Terraform and validate with minimal apps
   - Deploy Neon PostgreSQL database with Terraform configuration
-  - Set up basic Render service configuration (without application code)
-  - Configure Vercel project setup (without application code)
-  - Configure Stripe webhooks and payment processing via Terraform
-  - Validate infrastructure connectivity and basic health checks
+  - Create minimal "Hello World" Express server for Medusa service with health check endpoint
+  - Create minimal "Coming Soon" Next.js app for frontend with basic page
+  - Deploy minimal apps to Render and Vercel using Terraform-managed infrastructure
+  - Set up Stripe account and API keys (webhook configuration deferred until full Medusa is deployed)
+  - Validate end-to-end deployment pipeline with minimal code
+  - Test database connectivity, environment variables, and service health checks
+  - Confirm CI/CD pipeline triggers and deploys successfully
   - _Requirements: 11.1, 11.2, 11.3, 12.1, 12.2_
 
 - [ ] 1.4 Set up local containerized development environment
@@ -55,8 +58,8 @@
 ## Phase 2: Core Services Setup and Deployment
 
 - [ ] 2. Set up and deploy Medusa backend
-- [ ] 2.1 Initialize Medusa backend with enhanced product structure
-  - Initialize Medusa project within local containerized development environment
+- [ ] 2.1 Replace minimal app with full Medusa backend
+  - Replace minimal Express server with full Medusa project within local containerized development environment
   - Configure PostgreSQL connection to local Docker Compose database
   - Configure Stripe payment integration with webhook endpoints for local development and production
   - Create custom product metadata fields for botanical themes, art supply types, curation stories, artisan producers, and sustainability info
@@ -71,6 +74,8 @@
   - Set up cross-service environment variable dependencies
   - Validate production deployment and basic API functionality
   - Test Medusa admin interface and basic product management on production
+  - Configure Stripe webhooks now that Medusa backend is running and accessible
+  - Test webhook delivery and payment processing integration
   - _Requirements: 12.1, 12.2, 11.3_
 
 - [ ] 3. Set up and deploy Sanity CMS
@@ -93,8 +98,8 @@
   - _Requirements: 11.4, 11.5, 12.3_
 
 - [ ] 4. Create and deploy Next.js frontend foundation
-- [ ] 4.1 Initialize Next.js project with core dependencies
-  - Initialize Next.js 14 project with TypeScript and App Router within development container
+- [ ] 4.1 Replace minimal app with full Next.js project
+  - Replace minimal "Coming Soon" app with full Next.js 14 project with TypeScript and App Router
   - Install and configure Tailwind CSS for botanical-themed styling with VS Code extension integration
   - Set up Headless UI for accessible interactive components (Listbox, Dialog, Combobox, Disclosure)
   - Configure Framer Motion for botanical animations and transitions
@@ -255,31 +260,10 @@
   - Deploy optimizations and validate performance improvements
   - _Requirements: 8.4, 8.5, 9.4, 9.5_
 
-## Phase 9: Testing and Quality Assurance
+## Phase 9: Content Creation and SEO Setup
 
-- [ ] 12. Implement comprehensive testing and quality assurance
-- [ ] 12.1 Create BDD-focused test suite
-  - Write BDD tests for complete user journeys (discovery → purchase → fulfillment) using Playwright
-  - Test content-to-commerce integration flows (articles → product recommendations → sales)
-  - Implement API interface tests for Medusa-Sanity-Next.js integration points
-  - Add strategic unit tests only for complex business logic (pricing calculations, curation algorithms)
-  - Test Headless UI component accessibility in context of real user flows
-  - Validate trust-building features (reviews, testimonials, curation stories) through interface testing
-  - _Requirements: All requirements validation through user-facing behavior_
-
-- [ ] 12.2 Interface-focused performance and compatibility testing
-  - Monitor Core Web Vitals during real user journeys and optimize conversion-impacting performance issues
-  - Test complete payment flows with Stripe test mode including error scenarios and edge cases
-  - Validate responsive design and touch interactions across devices using real user scenarios
-  - Conduct cross-browser compatibility testing for revenue-critical flows (Safari, Chrome, Firefox)
-  - Test Sanity content loading performance in context of content-to-commerce user journeys
-  - Validate accessibility compliance through complete user flows rather than isolated component testing
-  - _Requirements: 8.4, 12.3_
-
-## Phase 10: Content Creation and SEO Setup
-
-- [ ] 13. Content creation and SEO optimization
-- [ ] 13.1 Enhance Sanity Studio editorial workflow
+- [ ] 12. Content creation and SEO optimization
+- [ ] 12.1 Enhance Sanity Studio editorial workflow
   - Customize Sanity Studio interface with botanical-themed branding and layout
   - Create content templates and input components for articles, tutorials, and artist profiles
   - Configure draft/publish workflow with content scheduling capabilities in Sanity Studio
@@ -289,7 +273,7 @@
   - Deploy enhanced Studio configuration to Sanity's hosted platform
   - _Requirements: 2.3, 6.1, 7.1_
 
-- [ ] 13.2 SEO optimization and search engine setup
+- [ ] 12.2 SEO optimization and search engine setup
   - Configure Google Search Console and submit sitemap for indexing
   - Set up Google Analytics 4 with e-commerce tracking and SEO performance monitoring
   - Implement comprehensive structured data testing and validation
@@ -300,7 +284,7 @@
   - Create SEO monitoring dashboard for keyword rankings and organic traffic
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 13.3 Populate SEO-optimized content and products
+- [ ] 12.3 Populate SEO-optimized content and products
   - Populate initial product catalog with 20-30 botanical-themed stationery items including SEO-optimized titles, descriptions, and keyword-rich curation stories
   - Create comprehensive founder story content with SEO-optimized botanical passion narrative targeting brand-related keywords
   - Add 5-8 sample articles covering writing history, calligraphy techniques, and art supply tutorials with target keywords and internal linking strategy
@@ -311,10 +295,10 @@
   - Implement content interlinking strategy connecting articles, products, and tutorials for SEO authority
   - _Requirements: 1.1, 2.1, 3.1, 3.3, 6.1, 6.4, 7.1, 7.2, 8.1, 8.2_
 
-## Phase 11: Monitoring and Operations (LOW PRIORITY)
+## Phase 10: Monitoring and Operations (LOW PRIORITY)
 
-- [ ] 14. Set up monitoring and observability (LOW PRIORITY)
-- [ ] 14.1 Configure error tracking and alerting
+- [ ] 13. Set up monitoring and observability (LOW PRIORITY)
+- [ ] 13.1 Configure error tracking and alerting
   - Set up Sentry free tier account and create Ink and Ivy project
   - Integrate Sentry SDK with Next.js frontend for client-side error tracking
   - Add Sentry to Medusa backend for server-side error monitoring
@@ -322,7 +306,7 @@
   - Set up email alerts for critical revenue-impacting errors
   - _Requirements: Operational excellence, not user-facing_
 
-- [ ] 14.2 Implement business metrics tracking
+- [ ] 13.2 Implement business metrics tracking
   - Add content-to-commerce conversion tracking (articles → products → purchases)
   - Implement trust signal effectiveness measurement
   - Create free tier usage monitoring with proactive alerts
@@ -330,7 +314,7 @@
   - Track user journey performance across the content-commerce integration
   - _Requirements: Business intelligence, not user-facing_
 
-- [ ] 14.3 Configure performance and infrastructure monitoring
+- [ ] 13.3 Configure performance and infrastructure monitoring
   - Set up monitoring dashboards for all platform-native tools (Vercel, Render, Neon, Sanity)
   - Configure API response time monitoring for service integrations
   - Implement real user performance monitoring for Core Web Vitals
@@ -338,8 +322,8 @@
   - Create runbook for common monitoring scenarios and responses
   - _Requirements: Operational reliability, not user-facing_
 
-- [ ] 15. Infrastructure maintenance and operations (LOW PRIORITY)
-- [ ] 15.1 Terraform Cloud management and drift detection
+- [ ] 14. Infrastructure maintenance and operations (LOW PRIORITY)
+- [ ] 14.1 Terraform Cloud management and drift detection
   - Configure Terraform Cloud drift detection and automated notifications
   - Set up Terraform Cloud run triggers for infrastructure change management
   - Implement infrastructure change approval workflow through Terraform Cloud
@@ -348,7 +332,7 @@
   - Create infrastructure rollback procedures using Terraform Cloud state versions
   - _Requirements: Infrastructure reliability and maintenance_
 
-- [ ] 15.2 Free tier monitoring and cost optimization
+- [ ] 14.2 Free tier monitoring and cost optimization
   - Implement automated monitoring for free tier usage limits across all services
   - Set up proactive alerts before reaching service limits (Neon storage, Render hours, Sanity API requests)
   - Create cost tracking dashboard for all infrastructure services

@@ -818,6 +818,12 @@ const freeTierLimits = {
 
 ### Frontend Testing (BDD-Focused Approach)
 
+**BDD Development Strategy:**
+- Follow true BDD methodology: write Playwright tests first, then implement features to make tests pass
+- Tests define the expected behavior before any implementation begins
+- Each feature development cycle: write failing tests → implement feature → tests pass
+- Tests serve as living documentation of user requirements and acceptance criteria
+
 **Primary: BDD/Interface Testing (80%):**
 - End-to-end user journeys with Playwright (discovery → purchase → fulfillment)
 - Content-to-commerce integration flows (articles → product recommendations → sales)
