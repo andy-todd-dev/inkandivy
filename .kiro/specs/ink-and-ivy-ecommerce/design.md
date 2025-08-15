@@ -428,7 +428,7 @@ All infrastructure provisioning and configuration will be managed through Terraf
 ```hcl
 terraform {
   cloud {
-    organization = "ink-and-ivy"
+    organization = "Ink-and-Ivy"
     workspaces {
       name = "production"
     }
