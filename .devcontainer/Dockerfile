@@ -1,14 +1,14 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-ARG TERRAFORM_VERSION=1.12.1
-ARG GITHUB_CLI_VERSION=2.42.1
+ARG TERRAFORM_VERSION=1.12.2-1
+ARG GITHUB_CLI_VERSION=2.76.2
 ARG STRIPE_CLI_VERSION=1.19.4
 ARG VERCEL_CLI_VERSION=33.5.5
 ARG SANITY_CLI_VERSION=3.29.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     curl \
     wget \
     git \
@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     gnupg \
     lsb-release \
+    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 # Node.js
@@ -25,17 +26,18 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && rm -rf /var/lib/apt/lists/*
 
 # Terraform
-# RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-#     && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
-#     && apt-get update && apt-get install -y --no-install-recommends terraform=${TERRAFORM_VERSION} \
-#     && rm -rf /var/lib/apt/lists/*
+RUN wget -O- https://apt.releases.hashicorp.com/gpg |gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null \
+    && gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list \
+    && apt-get update && apt-get install -y --no-install-recommends terraform=${TERRAFORM_VERSION} \
+    && rm -rf /var/lib/apt/lists/*
 
 # GitHub CLI
-# RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-#     && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-#     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-#     && apt-get update && apt-get install -y --no-install-recommends gh=${GITHUB_CLI_VERSION} \
-#     && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update && apt-get install -y --no-install-recommends gh=${GITHUB_CLI_VERSION} \
+    && rm -rf /var/lib/apt/lists/*
 
 # Stripe CLI 
 RUN curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | tee /usr/share/keyrings/stripe.gpg >/dev/null \

@@ -18,7 +18,7 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Configuration
-ORGANIZATION="ink-and-ivy"
+ORGANIZATION="Ink-and-Ivy"
 WORKSPACE="production"
 CONFIG_FILE=".bootstrap-config"
 
@@ -65,14 +65,12 @@ load_config() {
 # Prompt for input with default
 prompt_input() {
     local prompt="$1"
-    local default="$2"
-    local var_name="$3"
-    local is_sensitive="${4:-false}"
-    
+    local var_name="$2"
+
     # Check if we already have this value
     local existing_value
     existing_value=$(load_config "$var_name")
-    
+
     if [[ -n "$existing_value" ]]; then
         if [[ "$is_sensitive" == "true" ]]; then
             log_info "$prompt: [Already configured]"
@@ -82,32 +80,22 @@ prompt_input() {
         echo "$existing_value"
         return
     fi
-    
-    # Prompt for new value
+
+    local colored_prompt
+    colored_prompt="${BLUE}${prompt}${NC}"
+    if [[ -n "$default" ]]; then
+        colored_prompt+=" [$default]"
+    fi
+    colored_prompt+=": "
+
     local input
-    if [[ "$is_sensitive" == "true" ]]; then
-        echo -n -e "${BLUE}$prompt${NC}"
-        [[ -n "$default" ]] && echo -n " [$default]"
-        echo -n ": "
-        read -s input
-        echo ""
-    else
-        echo -n -e "${BLUE}$prompt${NC}"
-        [[ -n "$default" ]] && echo -n " [$default]"
-        echo -n ": "
-        read input
-    fi
-    
-    # Use default if empty
-    if [[ -z "$input" && -n "$default" ]]; then
-        input="$default"
-    fi
-    
+    read -r -p "$(printf "%b" "$colored_prompt")" input
+
     # Save configuration
     if [[ -n "$input" ]]; then
         save_config "$var_name" "$input"
     fi
-    
+
     echo "$input"
 }
 
@@ -117,11 +105,17 @@ authenticate_services() {
     
     # Terraform Cloud
     log_info "Authenticating with Terraform Cloud..."
-    if ! terraform login; then
-        log_error "Failed to authenticate with Terraform Cloud"
-        return 1
+    local tf_creds="${HOME}/.terraform.d/credentials.tfrc.json"
+
+    if [[ -f "$tf_creds" ]]; then
+        log_success "Terraform Cloud authenticated"
+    else
+        if ! terraform login; then
+            log_error "Failed to authenticate with Terraform Cloud"
+            return 1
+        fi
+        log_success "Terraform Cloud authenticated"
     fi
-    log_success "Terraform Cloud authenticated"
     
     # GitHub CLI
     log_info "Authenticating with GitHub..."
@@ -129,60 +123,22 @@ authenticate_services() {
         gh auth login
     fi
     log_success "GitHub authenticated"
-    
-    # Vercel CLI
-    log_info "Authenticating with Vercel..."
-    if ! vercel whoami >/dev/null 2>&1; then
-        vercel login
-    fi
-    log_success "Vercel authenticated"
-    
 
 }
 
-# Generate tokens where possible
-generate_tokens() {
-    log_step "Generating service tokens..."
-    
-    # Generate Terraform Cloud organization token
-    log_info "Creating Terraform Cloud organization token..."
-    local tf_token_name="bootstrap-$(date +%s)"
-    TF_API_TOKEN=$(terraform organization token create --name "$tf_token_name" --organization "$ORGANIZATION" --json 2>/dev/null | jq -r '.token' || echo "")
-    
-    if [[ -n "$TF_API_TOKEN" && "$TF_API_TOKEN" != "null" ]]; then
-        save_config "tf_api_token" "$TF_API_TOKEN"
-        log_success "Terraform Cloud token generated"
-    else
-        log_warning "Could not generate Terraform Cloud token automatically"
-        TF_API_TOKEN=$(prompt_input "Terraform Cloud organization API token" "" "tf_api_token" "true")
-    fi
-    
-    # Generate Vercel token
-    log_info "Creating Vercel deployment token..."
-    local vercel_token_name="terraform-$(date +%s)"
-    VERCEL_API_TOKEN=$(vercel tokens create "$vercel_token_name" --scope "deployment,project" --json 2>/dev/null | jq -r '.token' || echo "")
-    
-    if [[ -n "$VERCEL_API_TOKEN" && "$VERCEL_API_TOKEN" != "null" ]]; then
-        save_config "vercel_api_token" "$VERCEL_API_TOKEN"
-        log_success "Vercel token generated"
-    else
-        log_warning "Could not generate Vercel token automatically"
-        VERCEL_API_TOKEN=$(prompt_input "Vercel API token" "" "vercel_api_token" "true")
-    fi
-    
-
-}
-
-collect_manual_tokens() {
-    RENDER_API_KEY=$(prompt_input "Render API key" "" "render_api_key" "true")
-    STRIPE_SECRET_KEY=$(prompt_input "Stripe secret key" "" "stripe_secret_key" "true")
-    STRIPE_PUBLISHABLE_KEY=$(prompt_input "Stripe publishable key" "" "stripe_publishable_key" "true")
-    NEON_API_KEY=$(prompt_input "Neon API key" "" "neon_api_key" "true")
-    SANITY_PROJECT_ID=$(prompt_input "Sanity project ID" "" "sanity_project_id")
-    SANITY_API_TOKEN=$(prompt_input "Sanity API token" "" "sanity_api_token" "true")
-    CLOUDINARY_CLOUD_NAME=$(prompt_input "Cloudinary cloud name" "" "cloudinary_cloud_name")
-    CLOUDINARY_API_KEY=$(prompt_input "Cloudinary API key" "" "cloudinary_api_key" "true")
-    CLOUDINARY_API_SECRET=$(prompt_input "Cloudinary API secret" "" "cloudinary_api_secret" "true")
+collect_tokens() {
+    log_info "Collecting API tokens..."
+    TF_API_TOKEN=$(prompt_input "Terraform Cloud API token" "tf_api_token")
+    VERCEL_API_TOKEN=$(prompt_input "Vercel API token" "vercel_api_token")
+    RENDER_API_KEY=$(prompt_input "Render API key" "render_api_key")
+    STRIPE_SECRET_KEY=$(prompt_input "Stripe secret key" "stripe_secret_key")
+    STRIPE_PUBLISHABLE_KEY=$(prompt_input "Stripe publishable key" "stripe_publishable_key")
+    NEON_API_KEY=$(prompt_input "Neon API key" "neon_api_key")
+    SANITY_PROJECT_ID=$(prompt_input "Sanity project ID" "sanity_project_id")
+    SANITY_API_TOKEN=$(prompt_input "Sanity API token" "sanity_api_token")
+    CLOUDINARY_CLOUD_NAME=$(prompt_input "Cloudinary cloud name" "cloudinary_cloud_name")
+    CLOUDINARY_API_KEY=$(prompt_input "Cloudinary API key" "cloudinary_api_key")
+    CLOUDINARY_API_SECRET=$(prompt_input "Cloudinary API secret" "cloudinary_api_secret")
 }
 
 # Setup Terraform Cloud workspace
@@ -202,32 +158,6 @@ setup_terraform_cloud() {
             return 1
         fi
     fi
-}
-
-# Configure Terraform Cloud variables
-configure_terraform_variables() {
-    log_step "Configuring Terraform Cloud variables..."
-    
-    # Define core infrastructure variables for Terraform Cloud
-    declare -A variables=(
-        ["neon_api_key"]="$NEON_API_KEY"
-        ["stripe_secret_key"]="$STRIPE_SECRET_KEY"
-    )
-    
-    # Set variables using Terraform CLI
-    for var_name in "${!variables[@]}"; do
-        local var_value="${variables[$var_name]}"
-        
-        local tf_cmd="terraform workspace variable set -workspace=$WORKSPACE -organization=$ORGANIZATION -key=$var_name -value=$var_value -sensitive"
-        
-        if eval "$tf_cmd" >/dev/null 2>&1; then
-            log_success "Set sensitive variable: $var_name"
-        else
-            log_warning "Failed to set variable: $var_name"
-        fi
-    done
-    
-    log_success "Terraform Cloud variables configured"
 }
 
 # Configure GitHub secrets
@@ -276,8 +206,6 @@ initialize_and_deploy() {
         cd ..
         return 1
     fi
-    
-    # Validate configuration
     if terraform plan -var-file="environments/production.tfvars" >/dev/null 2>&1; then
         log_success "Terraform configuration valid"
     else
@@ -325,12 +253,33 @@ setup_sanity() {
     log_success "Sanity project created"
 }
 
+# Apply admin Terraform (workspace + sensitive variables) - standalone function
+run_admin_terraform() {
+    log_step "Applying admin Terraform configuration (workspace + variables)..."
+    pushd infrastructure/admin >/dev/null || { log_error "Admin directory missing"; return 1; }
+    export TFE_TOKEN="$TF_API_TOKEN"
+    if ! terraform init -input=false >/dev/null 2>&1; then
+        log_error "Admin terraform init failed"
+        popd >/dev/null
+        return 1
+    fi
+    if terraform apply -auto-approve \
+        -var "neon_api_key=$NEON_API_KEY" \
+        -var "stripe_secret_key=$STRIPE_SECRET_KEY" 2>&1; then
+        log_success "Admin Terraform applied (workspace + variables ready)"
+    else
+        log_error "Admin Terraform apply failed"
+        popd >/dev/null
+        return 1
+    fi
+    popd >/dev/null
+}
+
 main() {
     authenticate_services
-    generate_tokens
-    collect_manual_tokens
+    collect_tokens
     setup_terraform_cloud
-    configure_terraform_variables
+    run_admin_terraform
     configure_github_secrets
     initialize_and_deploy
     setup_sanity

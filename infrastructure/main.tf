@@ -7,7 +7,7 @@ terraform {
   }
 
   required_version = ">= 1.12"
-  
+
   required_providers {
     neon = {
       source  = "kislerdm/neon"
@@ -31,7 +31,7 @@ provider "stripe" {
 locals {
   project_name = "ink-and-ivy"
   environment  = var.environment
-  
+
   common_tags = {
     Project     = local.project_name
     Environment = local.environment
